@@ -1,0 +1,102 @@
+﻿@model IEnumerable<College.Models.Faculty>
+
+@{
+    ViewData["Title"] = "Index";
+    var id = (int?)ViewData["id"];
+    var cohorts = (List<Cohort>)ViewData["cohorts"];
+}
+
+<h1>Index</h1>
+
+<style>
+    body, html, footer, header {
+        background-color: #343a40; /* Dark theme background */
+        color: #ffffff; /* Light text color for dark background */
+    }
+    </style>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.hireDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.mail)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        var selected = "";
+        if(item.Id == id)
+        {
+            selected = "success";
+        }
+        <tr class=@selected>
+            <td>
+                @Html.DisplayFor(modelItem => item.name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.hireDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.mail)
+            </td>
+            <td>
+                <a asp-action="Index" asp-route-id="@item.Id">Select</a> |
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+@if (id != null)
+{
+
+    //var grades = (List<Grade>?)ViewData["selected"];
+    var teacher = Model.Single(s => s.Id == id);
+    <h1>Students of selected teacher</h1>
+    @if (teacher.Cohorts != null)
+    {
+        @foreach (var co in teacher.Cohorts)
+        {
+            <h2>Students of class @co.name</h2>
+            <h3>Course : @co.Course.title</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>FirstName</th>
+                        <th>LastName</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var stu in co.Students){
+                        <tr>
+                        @if (stu != null)
+                        {
+                            <td>@stu.firstname</td>
+                            <td>@stu.lastname</td>
+                        }
+                        else
+                        {
+                            <td></td>
+                            <td></td>
+                        }
+                    </tr>
+                 }
+                </tbody>
+            </table>
+        }
+    }
+}
